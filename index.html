@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GCP ACE Exam Prep Pro | 300+ Associate Cloud Engineer Questions</title>
+    <meta name="description" content="Master the Google Associate Cloud Engineer certification exam with 300+ real practice questions, detailed explanations, service comparisons, study mode, and local storage tracking.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background Gradient Glows -->
+    <div class="glow-bg glow-1"></div>
+    <div class="glow-bg glow-2"></div>
+
+    <!-- Header / Navbar -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="brand">
+                <div class="logo-icon">☁️</div>
+                <div class="brand-text">
+                    <span class="brand-title">GCP ACE <span class="highlight">Prep Pro</span></span>
+                    <span class="brand-subtitle">Google Associate Cloud Engineer Exam Mastery</span>
+                </div>
+            </div>
+            <div class="nav-actions">
+                <div class="stats-badge" id="header-stats">
+                    <span class="stat-item">📚 <strong id="stat-total-q">300</strong> Questions</span>
+                    <span class="stat-item divider">•</span>
+                    <span class="stat-item">✅ <strong id="stat-solved">0</strong> Solved</span>
+                </div>
+                <button class="action-btn dashboard-btn" id="btn-show-dashboard">
+                    <span>📈 My Progress Tracker</span>
+                </button>
+                <div class="mode-toggle">
+                    <button class="mode-btn active" id="btn-study-mode">
+                        <span>📖 Study Mode</span>
+                    </button>
+                    <button class="mode-btn" id="btn-exam-mode">
+                        <span>⏱️ Mock Exam (50Q)</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Progress Tracker Modal -->
+    <div class="modal-overlay hidden" id="dashboard-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📈 Local Storage Progress & Mastery Tracker</h2>
+                <button class="modal-close" id="btn-close-dashboard">✕</button>
+            </div>
+            <div class="modal-body">
+                <div class="dash-overview">
+                    <div class="dash-stat-box">
+                        <span class="dash-label">Overall Accuracy</span>
+                        <strong class="dash-val" id="dash-accuracy">0%</strong>
+                    </div>
+                    <div class="dash-stat-box">
+                        <span class="dash-label">Correctly Solved</span>
+                        <strong class="dash-val text-success" id="dash-correct">0</strong>
+                    </div>
+                    <div class="dash-stat-box">
+                        <span class="dash-label">Needs Review</span>
+                        <strong class="dash-val text-danger" id="dash-wrong">0</strong>
+                    </div>
+                    <div class="dash-stat-box">
+                        <span class="dash-label">Mock Exams Taken</span>
+                        <strong class="dash-val text-primary" id="dash-exams-count">0</strong>
+                    </div>
+                </div>
+
+                <h3>Domain Mastery Breakdown</h3>
+                <div class="domain-bars" id="dash-domain-bars"></div>
+
+                <h3 style="margin-top: 1.5rem;">Recent Mock Exam History</h3>
+                <div class="exam-history-list" id="dash-exam-history">
+                    <p class="empty-text">No mock exams completed yet. Take a timed mock exam to save your score history!</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="reset-progress-btn" class="reset-btn">🗑️ Reset All Local Storage Progress</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="main-container">
+        
+        <!-- STUDY MODE VIEW -->
+        <section id="study-view" class="view-section active">
+            <!-- Filter & Search Panel -->
+            <div class="controls-panel">
+                <div class="search-box">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="search-input" placeholder="Search scenario, service comparison, gcloud command, concept (e.g. Spanner vs SQL, Cloud Run)...">
+                    <button id="clear-search" class="clear-btn hidden">✕</button>
+                </div>
+
+                <div class="filters-row">
+                    <div class="topic-filters" id="topic-filters">
+                        <button class="topic-pill active" data-topic="all">All Topics (300)</button>
+                        <button class="topic-pill" data-topic="iam">🔐 IAM & Security (60)</button>
+                        <button class="topic-pill" data-topic="compute">💻 Compute & GKE (60)</button>
+                        <button class="topic-pill" data-topic="storage">🗄️ Storage & DBs (60)</button>
+                        <button class="topic-pill" data-topic="networking">🌐 Networking & VPC (60)</button>
+                        <button class="topic-pill" data-topic="operations">📊 Monitoring & Ops (60)</button>
+                        <button class="topic-pill bookmark-pill" data-topic="bookmarked">⭐ Bookmarked (<span id="bookmark-count">0</span>)</button>
+                    </div>
+
+                    <div class="filter-dropdowns">
+                        <select id="difficulty-filter" class="custom-select">
+                            <option value="all">⚡ All Difficulties</option>
+                            <option value="Easy">Easy (Recall)</option>
+                            <option value="Medium">Medium (Application)</option>
+                            <option value="Hard">Hard (Complex Scenario)</option>
+                        </select>
+                        <select id="status-filter" class="custom-select">
+                            <option value="all">📌 All Status</option>
+                            <option value="unanswered">⬜ Unanswered</option>
+                            <option value="correct">🟩 Correctly Solved</option>
+                            <option value="incorrect">🟥 Needs Review</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Bar & Results Info -->
+            <div class="results-header">
+                <div class="showing-info">Showing <strong id="showing-count">0</strong> questions</div>
+                <div class="progress-bar-container">
+                    <div class="progress-label">Your Mastery: <span id="mastery-percent">0%</span></div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="mastery-bar" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Questions List -->
+            <div id="questions-container" class="questions-list">
+                <!-- Question cards generated via JS -->
+                <div class="loading-spinner">Loading 300 exam bank questions...</div>
+            </div>
+
+            <!-- Pagination / Load More -->
+            <div class="pagination-controls" id="pagination-controls">
+                <button class="page-btn" id="prev-page">← Previous</button>
+                <span class="page-info">Page <span id="current-page">1</span> of <span id="total-pages">1</span></span>
+                <button class="page-btn" id="next-page">Next →</button>
+            </div>
+        </section>
+
+        <!-- MOCK EXAM MODE VIEW -->
+        <section id="exam-view" class="view-section hidden">
+            <div class="exam-header-card">
+                <div class="exam-intro" id="exam-intro-screen">
+                    <h2>🏆 Google Associate Cloud Engineer Mock Exam</h2>
+                    <p>Simulate the authentic certification exam environment. You will be presented with <strong>50 random scenario-based questions</strong> selected across all 300 official exam questions.</p>
+                    <div class="exam-rules">
+                        <div class="rule-item">⏱️ <strong>Time Limit:</strong> 120 Minutes (2 Hours)</div>
+                        <div class="rule-item">🎯 <strong>Passing Score:</strong> 70% (35 / 50 correct)</div>
+                        <div class="rule-item">💾 <strong>Local Storage:</strong> Scorecard automatically saved to tracker</div>
+                    </div>
+                    <button class="start-exam-btn" id="btn-start-exam">🚀 Start Timed Exam Now</button>
+                </div>
+
+                <div class="exam-active-screen hidden" id="exam-active-screen">
+                    <div class="exam-top-bar">
+                        <div class="timer-display" id="exam-timer">⏳ 02:00:00</div>
+                        <div class="exam-progress-text">Question <strong id="exam-q-current">1</strong> of 50</div>
+                        <button class="submit-exam-btn" id="btn-finish-exam">Finish & Submit Exam</button>
+                    </div>
+
+                    <!-- Question Navigator Palette -->
+                    <div class="exam-palette" id="exam-palette"></div>
+
+                    <!-- Single Exam Question Container -->
+                    <div class="exam-question-box" id="exam-question-container"></div>
+
+                    <!-- Exam Navigation Buttons -->
+                    <div class="exam-nav-buttons">
+                        <button class="exam-nav-btn" id="exam-prev-btn">← Previous Question</button>
+                        <button class="flag-q-btn" id="exam-flag-btn">🏳️ Flag for Review</button>
+                        <button class="exam-nav-btn primary" id="exam-next-btn">Next Question →</button>
+                    </div>
+                </div>
+
+                <!-- Exam Results Screen -->
+                <div class="exam-results-screen hidden" id="exam-results-screen">
+                    <div class="score-card" id="score-card">
+                        <div class="score-circle" id="score-circle">
+                            <span class="score-val" id="score-percent">0%</span>
+                            <span class="score-status" id="score-verdict">FAIL</span>
+                        </div>
+                        <div class="score-details">
+                            <h3>Exam Completed!</h3>
+                            <p>You answered <strong id="score-correct">0</strong> out of 50 questions correctly.</p>
+                            <div class="domain-breakdown" id="domain-breakdown"></div>
+                        </div>
+                    </div>
+                    <div class="results-actions">
+                        <button class="start-exam-btn" id="btn-retake-exam">🔄 Take Another Mock Exam</button>
+                        <button class="page-btn" id="btn-review-exam">📝 Review Answers & Explanations</button>
+                    </div>
+                    <div id="exam-review-list" class="questions-list hidden"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>Built for aspiring Google Associate Cloud Engineers. Comprehensive study bank compiled from official exam guides, practice exams, and real-world GCP service comparisons.</p>
+        <p>All progress, bookmarks, and mock exam history are securely stored in your local browser storage.</p>
+    </footer>
+
+    <!-- Load Question Bank Scripts -->
+    <script src="data/questions_iam.js"></script>
+    <script src="data/questions_compute.js"></script>
+    <script src="data/questions_storage.js"></script>
+    <script src="data/questions_networking.js"></script>
+    <script src="data/questions_operations.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
