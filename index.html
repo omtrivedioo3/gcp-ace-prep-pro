@@ -217,8 +217,14 @@
         <section id="recap-view" class="view-section hidden">
             <div class="recap-header-card">
                 <h2>🧠 GCP ACE Visual Cheat Sheets & Decision Trees</h2>
-                <p>High-yield architectural comparison diagrams and rapid exam cheat sheets covering every GCP core vertical.</p>
+                <p>High-yield architectural comparison diagrams, CLI commands, and rapid exam cheat sheets covering every GCP core vertical.</p>
                 
+                <div class="search-box" style="max-width: 600px; margin: 0 auto 1.5rem;">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="recap-search-input" placeholder="Search commands, ports, SLAs, service names (e.g. gcloud, 99.999%, Spot)...">
+                    <button id="clear-recap-search" class="clear-btn hidden">✕</button>
+                </div>
+
                 <!-- Vertical Tabs -->
                 <div class="recap-tabs-row" id="recap-tabs">
                     <button class="recap-tab-btn active" data-vertical="storage">🗄️ Storage & DBs</button>

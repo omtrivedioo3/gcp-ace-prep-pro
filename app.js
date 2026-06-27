@@ -14,6 +14,7 @@ const state = {
     
     // Filters
     searchQuery: '',
+    recapQuery: '',
     topicFilter: 'all',
     difficultyFilter: 'all',
     statusFilter: 'all',
@@ -92,6 +93,25 @@ function setupEventListeners() {
                 e.target.classList.add('active');
                 renderCheatSheet(e.target.dataset.vertical);
             }
+        });
+    }
+
+    // Recap Search Input
+    const recapSearchInput = document.getElementById('recap-search-input');
+    const clearRecapSearch = document.getElementById('clear-recap-search');
+    if (recapSearchInput && clearRecapSearch) {
+        recapSearchInput.addEventListener('input', (e) => {
+            state.recapQuery = e.target.value.toLowerCase().trim();
+            clearRecapSearch.classList.toggle('hidden', state.recapQuery === '');
+            const activeTab = document.querySelector('.recap-tab-btn.active') || document.querySelector('.recap-tab-btn[data-vertical="storage"]');
+            if (activeTab) renderCheatSheet(activeTab.dataset.vertical);
+        });
+        clearRecapSearch.addEventListener('click', () => {
+            recapSearchInput.value = '';
+            state.recapQuery = '';
+            clearRecapSearch.classList.add('hidden');
+            const activeTab = document.querySelector('.recap-tab-btn.active') || document.querySelector('.recap-tab-btn[data-vertical="storage"]');
+            if (activeTab) renderCheatSheet(activeTab.dataset.vertical);
         });
     }
 
@@ -308,8 +328,38 @@ function renderCheatSheet(vertical) {
         `;
     }).join('');
 
+    // Filter Services if query exists
+    const filteredServices = data.services.filter(svc => {
+        if (!state.recapQuery) return true;
+        const text = [
+            svc.name, svc.badge, svc.useCase, svc.uniqueFeature, 
+            svc.whenToUse, svc.gotcha, svc.command || '', ...(svc.keyPoints || [])
+        ].join(' ').toLowerCase();
+        return text.includes(state.recapQuery);
+    });
+
     // Build Service Cards Grid
-    const cardsHTML = data.services.map(svc => `
+    const cardsHTML = filteredServices.length > 0 ? filteredServices.map(svc => {
+        const cmdHTML = svc.command ? `
+            <div class="service-section">
+                <span class="service-label">💻 Must-Know Exam CLI Command</span>
+                <div class="cmd-box">
+                    <span class="cmd-text">${svc.command}</span>
+                    <button class="copy-cmd-btn" data-cmd="${svc.command.replace(/"/g, '&quot;')}">Copy</button>
+                </div>
+            </div>
+        ` : '';
+
+        const pointsHTML = svc.keyPoints && svc.keyPoints.length > 0 ? `
+            <div class="service-section">
+                <span class="service-label">📌 Key Exam Bullet Points</span>
+                <ul class="key-points-list">
+                    ${svc.keyPoints.map(p => `<li>${p}</li>`).join('')}
+                </ul>
+            </div>
+        ` : '';
+
+        return `
         <div class="service-card" style="border-top: 4px solid ${svc.color};">
             <div class="service-header">
                 <h3 class="service-title">${svc.name}</h3>
@@ -320,6 +370,9 @@ function renderCheatSheet(vertical) {
                 <span class="service-label">💡 Primary Use Case</span>
                 <p style="color: var(--text-primary);">${svc.useCase}</p>
             </div>
+
+            ${cmdHTML}
+            ${pointsHTML}
 
             <div class="service-section">
                 <span class="service-label">✨ Killer Unique Feature</span>
@@ -336,7 +389,8 @@ function renderCheatSheet(vertical) {
                 <div class="gotcha-box">${svc.gotcha}</div>
             </div>
         </div>
-    `).join('');
+        `;
+    }).join('') : `<div class="q-card" style="grid-column: 1 / -1; text-align: center; padding: 2.5rem;"><h3>No services matched your search '${state.recapQuery}'</h3><p style="color: var(--text-muted); margin-top: 0.5rem;">Try clearing your search or switching vertical tabs.</p></div>`;
 
     container.innerHTML = `
         <div class="flowchart-card">
@@ -345,6 +399,24 @@ function renderCheatSheet(vertical) {
         </div>
         <div class="service-grid">${cardsHTML}</div>
     `;
+
+    // Attach copy listeners
+    container.querySelectorAll('.copy-cmd-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const cmd = btn.getAttribute('data-cmd');
+            navigator.clipboard.writeText(cmd).then(() => {
+                const orig = btn.textContent;
+                btn.textContent = 'Copied! ✓';
+                btn.style.background = 'var(--secondary)';
+                setTimeout(() => {
+                    btn.textContent = orig;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(err => {
+                alert('Copied to clipboard: ' + cmd);
+            });
+        });
+    });
 }
 
 /* ==========================================================================

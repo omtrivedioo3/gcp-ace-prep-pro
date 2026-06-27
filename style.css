@@ -1231,6 +1231,70 @@ body {
     color: #fde047;
 }
 
+/* CLI Command Box & Copy Button */
+.cmd-box {
+    background: #0d1117;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    padding: 0.8rem 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    font-family: var(--font-code);
+    font-size: 0.85rem;
+    color: #58a6ff;
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);
+    overflow-x: auto;
+}
+
+.cmd-text {
+    white-space: nowrap;
+    overflow-x: auto;
+}
+
+.copy-cmd-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--text-primary);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.copy-cmd-btn:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+.key-points-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding-left: 0.2rem;
+}
+
+.key-points-list li {
+    position: relative;
+    padding-left: 1.4rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.key-points-list li::before {
+    content: "▸";
+    position: absolute;
+    left: 0;
+    color: var(--primary);
+    font-weight: 800;
+}
+
 @media (max-width: 768px) {
     .nav-container { flex-direction: column; }
     .filters-row { flex-direction: column; align-items: stretch; }
