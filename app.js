@@ -81,6 +81,19 @@ function setupEventListeners() {
     // Mode Switchers
     document.getElementById('btn-study-mode').addEventListener('click', () => switchMode('study'));
     document.getElementById('btn-exam-mode').addEventListener('click', () => switchMode('exam'));
+    document.getElementById('btn-recap-mode').addEventListener('click', () => switchMode('recap'));
+
+    // Recap tabs switching
+    const recapTabs = document.getElementById('recap-tabs');
+    if (recapTabs) {
+        recapTabs.addEventListener('click', (e) => {
+            if (e.target.classList.contains('recap-tab-btn')) {
+                document.querySelectorAll('.recap-tab-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                renderCheatSheet(e.target.dataset.vertical);
+            }
+        });
+    }
 
     // Dashboard Modal Controls
     document.getElementById('btn-show-dashboard').addEventListener('click', showDashboardModal);
@@ -252,15 +265,86 @@ function switchMode(mode) {
     state.currentMode = mode;
     document.getElementById('btn-study-mode').classList.toggle('active', mode === 'study');
     document.getElementById('btn-exam-mode').classList.toggle('active', mode === 'exam');
+    document.getElementById('btn-recap-mode').classList.toggle('active', mode === 'recap');
     
     document.getElementById('study-view').classList.toggle('hidden', mode !== 'study');
     document.getElementById('exam-view').classList.toggle('hidden', mode !== 'exam');
+    document.getElementById('recap-view').classList.toggle('hidden', mode !== 'recap');
 
     if (mode === 'exam' && !state.exam.active) {
         document.getElementById('exam-intro-screen').classList.remove('hidden');
         document.getElementById('exam-active-screen').classList.add('hidden');
         document.getElementById('exam-results-screen').classList.add('hidden');
     }
+
+    if (mode === 'recap') {
+        const activeTab = document.querySelector('.recap-tab-btn.active') || document.querySelector('.recap-tab-btn[data-vertical="storage"]');
+        if (activeTab) {
+            renderCheatSheet(activeTab.dataset.vertical);
+        }
+    }
+}
+
+/* ==========================================================================
+   Quick Recap & Visual Cheat Sheets Rendering
+   ========================================================================== */
+function renderCheatSheet(vertical) {
+    const container = document.getElementById('recap-content-container');
+    if (!window.CHEAT_SHEETS || !window.CHEAT_SHEETS[vertical]) {
+        container.innerHTML = '<div class="loading-spinner">⚠️ Cheat sheet data loading...</div>';
+        return;
+    }
+
+    const data = window.CHEAT_SHEETS[vertical];
+
+    // Build Flowchart Steps
+    const stepsHTML = data.flowchart.steps.map((step, idx) => {
+        const arrow = idx < data.flowchart.steps.length - 1 ? '<span class="flow-arrow">→</span>' : '';
+        return `
+            <div class="flow-step" style="border-left-color: ${step.color};">
+                ${step.label}
+            </div>
+            ${arrow}
+        `;
+    }).join('');
+
+    // Build Service Cards Grid
+    const cardsHTML = data.services.map(svc => `
+        <div class="service-card" style="border-top: 4px solid ${svc.color};">
+            <div class="service-header">
+                <h3 class="service-title">${svc.name}</h3>
+                <span class="service-badge" style="background: ${svc.color}22; color: ${svc.color}; border: 1px solid ${svc.color}66;">${svc.badge}</span>
+            </div>
+            
+            <div class="service-section">
+                <span class="service-label">💡 Primary Use Case</span>
+                <p style="color: var(--text-primary);">${svc.useCase}</p>
+            </div>
+
+            <div class="service-section">
+                <span class="service-label">✨ Killer Unique Feature</span>
+                <div class="feature-box">${svc.uniqueFeature}</div>
+            </div>
+
+            <div class="service-section">
+                <span class="service-label">🎯 When to Use (Exam Rule)</span>
+                <div class="when-box">${svc.whenToUse}</div>
+            </div>
+
+            <div class="service-section">
+                <span class="service-label">⚠️ Exam Gotcha / Pro-Tip</span>
+                <div class="gotcha-box">${svc.gotcha}</div>
+            </div>
+        </div>
+    `).join('');
+
+    container.innerHTML = `
+        <div class="flowchart-card">
+            <div class="flowchart-title">🔀 ${data.flowchart.title}</div>
+            <div class="flow-steps">${stepsHTML}</div>
+        </div>
+        <div class="service-grid">${cardsHTML}</div>
+    `;
 }
 
 /* ==========================================================================

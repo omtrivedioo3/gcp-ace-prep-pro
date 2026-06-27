@@ -1028,8 +1028,212 @@ body {
     color: white;
 }
 
+/* ==========================================================================
+   Quick Recap & Visual Cheat Sheets Section Styles
+   ========================================================================== */
+.recap-header-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.recap-header-card h2 {
+    font-size: 2.2rem;
+    margin-bottom: 0.8rem;
+    background: linear-gradient(135deg, #4285F4, #FBBC05, #34A853);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 800;
+}
+
+.recap-header-card p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    max-width: 750px;
+    margin: 0 auto 2rem;
+    line-height: 1.6;
+}
+
+.recap-tabs-row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    border-top: 1px solid var(--border-color);
+    padding-top: 1.8rem;
+}
+
+.recap-tab-btn {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 0.8rem 1.4rem;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.recap-tab-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.recap-tab-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: white;
+    box-shadow: 0 5px 20px var(--primary-glow);
+    transform: scale(1.05);
+}
+
+/* Flowchart Visual Box */
+.flowchart-card {
+    background: linear-gradient(135deg, rgba(66, 133, 244, 0.1), rgba(15, 23, 42, 0.8));
+    border: 1px solid rgba(66, 133, 244, 0.3);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 2.5rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+.flowchart-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #8ab4f8;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.flow-steps {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.8rem;
+    justify-content: center;
+}
+
+.flow-step {
+    background: rgba(15, 23, 42, 0.9);
+    border-left: 4px solid var(--primary);
+    padding: 0.8rem 1.2rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    transition: transform 0.2s ease;
+}
+
+.flow-step:hover {
+    transform: translateY(-3px);
+}
+
+.flow-arrow {
+    color: var(--text-muted);
+    font-weight: 800;
+    font-size: 1.2rem;
+}
+
+/* Service Cards Grid */
+.service-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.8rem;
+}
+
+.service-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    padding: 1.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.service-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+}
+
+.service-title {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: white;
+}
+
+.service-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.service-section {
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+.service-label {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+}
+
+.feature-box {
+    background: rgba(66, 133, 244, 0.08);
+    border: 1px solid rgba(66, 133, 244, 0.25);
+    padding: 1rem;
+    border-radius: 10px;
+    color: #93c5fd;
+}
+
+.when-box {
+    background: rgba(52, 168, 83, 0.08);
+    border: 1px solid rgba(52, 168, 83, 0.25);
+    padding: 1rem;
+    border-radius: 10px;
+    color: #86efac;
+}
+
+.gotcha-box {
+    background: rgba(251, 188, 5, 0.08);
+    border: 1px solid rgba(251, 188, 5, 0.25);
+    padding: 1rem;
+    border-radius: 10px;
+    color: #fde047;
+}
+
 @media (max-width: 768px) {
     .nav-container { flex-direction: column; }
     .filters-row { flex-direction: column; align-items: stretch; }
     .score-card { flex-direction: column; gap: 1.5rem; }
+    .service-grid { grid-template-columns: 1fr; }
 }

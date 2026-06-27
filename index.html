@@ -41,6 +41,9 @@
                     <button class="mode-btn" id="btn-exam-mode">
                         <span>⏱️ Mock Exam (50Q)</span>
                     </button>
+                    <button class="mode-btn" id="btn-recap-mode">
+                        <span>🧠 Quick Recap & Visuals</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -209,6 +212,26 @@
                 </div>
             </div>
         </section>
+
+        <!-- QUICK RECAP & VISUAL CHEAT SHEETS VIEW -->
+        <section id="recap-view" class="view-section hidden">
+            <div class="recap-header-card">
+                <h2>🧠 GCP ACE Visual Cheat Sheets & Decision Trees</h2>
+                <p>High-yield architectural comparison diagrams and rapid exam cheat sheets covering every GCP core vertical.</p>
+                
+                <!-- Vertical Tabs -->
+                <div class="recap-tabs-row" id="recap-tabs">
+                    <button class="recap-tab-btn active" data-vertical="storage">🗄️ Storage & DBs</button>
+                    <button class="recap-tab-btn" data-vertical="compute">💻 Compute & GKE</button>
+                    <button class="recap-tab-btn" data-vertical="iam">🔐 IAM & Security</button>
+                    <button class="recap-tab-btn" data-vertical="networking">🌐 Networking & VPC</button>
+                    <button class="recap-tab-btn" data-vertical="operations">📊 Monitoring & Ops</button>
+                </div>
+            </div>
+
+            <!-- Active Vertical Content Container -->
+            <div id="recap-content-container" class="recap-content-area"></div>
+        </section>
     </main>
 
     <footer class="footer">
@@ -222,6 +245,7 @@
     <script src="data/questions_storage.js"></script>
     <script src="data/questions_networking.js"></script>
     <script src="data/questions_operations.js"></script>
+    <script src="data/cheat_sheets.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
