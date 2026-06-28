@@ -107,6 +107,51 @@ window.CHEAT_SHEETS = {
                     "📁 Filestore is managed NFS, allowing concurrent read/write access across hundreds of Compute Engine VMs or GKE pods."
                 ],
                 gotcha: "Standard Persistent Disks cannot be mounted read-write to multiple VMs simultaneously in Read-Write mode (use Filestore instead)."
+            },
+            {
+                name: "BigQuery Enterprise Analytics",
+                badge: "Data Warehouse (OLAP)",
+                color: "#4285F4",
+                useCase: "Interactive ad-hoc SQL analytical queries across petabytes of data, machine learning (BQ ML), and real-time streaming dashboards.",
+                uniqueFeature: "Serverless enterprise columnar OLAP engine decoupled from compute and storage. Supports Materialized Views and Federated External Tables.",
+                whenToUse: "Use for enterprise analytical reporting (>10 GB to petabytes). Never use BigQuery as an operational transaction (OLTP) database.",
+                command: "bq query --use_legacy_sql=false --dry_run 'SELECT COUNT(*) FROM `my_dataset.sales_table`'",
+                keyPoints: [
+                    "💰 On-Demand pricing charges $6.25 per TB scanned; Capacity Commitments (Editions) charge a predictable monthly flat rate for reserved slot CPUs.",
+                    "✂️ Table Partitioning prunes data scans by date/timestamp/integer ranges; Table Clustering colocates data blocks based on up to 4 sorting columns.",
+                    "⚡ Dry run queries (`--dry_run`) estimate total scanned gigabytes and billing charges instantly before executing."
+                ],
+                gotcha: "SELECT * scans every column in a columnar database! Always select specific needed columns to slash scan charges."
+            },
+            {
+                name: "Memorystore (Redis & Memcached)",
+                badge: "In-Memory Cache",
+                color: "#FBBC05",
+                useCase: "Sub-millisecond session caching, user profiles, gaming leaderboards, and high-speed pub/sub message queues.",
+                uniqueFeature: "Fully managed in-memory data store caching service powered by open-source Redis or Memcached engines.",
+                whenToUse: "Use to offload repetitive read-heavy queries from backend Cloud SQL or Spanner instances to reduce database latency.",
+                command: "gcloud redis instances create my-cache --size=16 --region=us-central1 --tier=STANDARD_HA",
+                keyPoints: [
+                    "🛡️ Standard Tier provisions a primary node and a synchronized standby replica in a different zone for automatic high availability (HA) failover.",
+                    "⚡ Caches data entirely in RAM, delivering sub-millisecond latency for real-time application responsiveness.",
+                    "🔄 Supports export/import of RDB snapshots to Cloud Storage for disaster recovery and migration."
+                ],
+                gotcha: "Basic Tier instances provide a single node without failover SLAs. Always specify Standard Tier for mission-critical production caching."
+            },
+            {
+                name: "Data Migration & Transfer Suite",
+                badge: "Data Ingestion",
+                color: "#34A853",
+                useCase: "Migrating massive multi-terabyte datasets and running databases into Google Cloud storage repositories.",
+                uniqueFeature: "Storage Transfer Service schedules online transfers from AWS S3/Azure; Transfer Appliance ships physical rack hardware for offline multi-terabyte data.",
+                whenToUse: "Use Transfer Appliance when bandwidth limitations make online transfer take >1 week (>20 TB). Use Database Migration Service (DMS) for continuous SQL replication.",
+                command: "gcloud transfer jobs create gs://my-bucket/ --source-bucket=my-aws-s3-bucket --include-prefixes=2026/",
+                keyPoints: [
+                    "🚚 Transfer Appliance is available in 40 TB and 300 TB rack-mountable models with military-grade AES-256 physical disk encryption.",
+                    "🔄 Database Migration Service (DMS) uses Change Data Capture (CDC) to replicate live MySQL/PostgreSQL databases into Cloud SQL with minimal cutover downtime.",
+                    "🌐 Storage Transfer Service performs automatic verification checksums and scheduled incremental sync runs."
+                ],
+                gotcha: "Transfer Appliance requires shipping back to Google data centers for data loading; do not use for immediate real-time synchronization."
             }
         ]
     },
@@ -199,6 +244,21 @@ window.CHEAT_SHEETS = {
                     "📦 Functions can be triggered via HTTP webhooks or asynchronous Cloud Events (Storage object finalize, Pub/Sub publish)."
                 ],
                 gotcha: "Gen 2 Cloud Functions are powered under the hood by Cloud Run and Eventarc, allowing up to 60-minute execution timeouts!"
+            },
+            {
+                name: "Cloud Scheduler & Cloud Tasks",
+                badge: "Async Automation",
+                color: "#a855f7",
+                useCase: "Orchestrating automated recurring cron jobs (Scheduler) and managing asynchronous, rate-limited HTTP push task queues (Tasks).",
+                uniqueFeature: "Cloud Scheduler acts as an enterprise managed cron scheduler; Cloud Tasks provides distributed task queuing with configurable rate dispatching and retries.",
+                whenToUse: "Use Cloud Scheduler to trigger nightly database backups or reports. Use Cloud Tasks to decouple user webhooks and buffer traffic spikes to worker microservices.",
+                command: "gcloud scheduler jobs create http my-job --schedule='0 2 * * *' --uri='https://my-run-app.run.app/clean' --http-method=POST",
+                keyPoints: [
+                    "⏰ Cloud Scheduler uses standard Unix cron format (`* * * * *`) and supports OIDC/OAuth authentication headers to trigger secure endpoints.",
+                    "🔀 Cloud Tasks guarantees at-least-once delivery, allowing explicit configuration of max dispatch rate (QPS) and concurrent task worker limits.",
+                    "🎯 Both services integrate seamlessly to invoke Cloud Run, App Engine, Cloud Functions, or Pub/Sub topics."
+                ],
+                gotcha: "Cloud Scheduler triggers jobs at scheduled times; Cloud Tasks manages worker execution pacing and automatic retry exponential backoff."
             }
         ]
     },
@@ -289,6 +349,36 @@ window.CHEAT_SHEETS = {
                     "📜 Can be enforced at Organization, Folder, or Project nodes with inheritance rules."
                 ],
                 gotcha: "IAM controls *who* can call an API; Organization Policies control *what resource configurations* are permitted to exist."
+            },
+            {
+                name: "Secret Manager & Cloud KMS",
+                badge: "Data Protection",
+                color: "#EA4335",
+                useCase: "Storing API payload passwords, OAuth secrets, and SSL certs (Secret Manager) vs wrapping database encryption keys (Cloud KMS).",
+                uniqueFeature: "Secret Manager stores encrypted payload values with automated versioning and Pub/Sub rotation triggers; Cloud KMS manages cryptographic envelope encryption keys.",
+                whenToUse: "Use Secret Manager for application database passwords. Use Cloud KMS Customer-Managed Encryption Keys (CMEK) to encrypt Cloud SQL, Spanner, and GCS buckets.",
+                command: "gcloud secrets create db-pass --data-file=pass.txt --replication-policy=automatic",
+                keyPoints: [
+                    "🔐 Grant `roles/secretmanager.secretAccessor` to compute service accounts so applications can read secret payloads at runtime.",
+                    "🗝️ Cloud KMS envelope encryption wraps your data encryption keys (DEKs) using key encryption keys (KEKs) stored in hardware security modules.",
+                    "🔔 Secret Manager integrates natively with Cloud Pub/Sub to send notifications when password rotation intervals approach."
+                ],
+                gotcha: "Cloud KMS encrypts key bytes but does NOT store application payload passwords. Use Secret Manager to store password strings!"
+            },
+            {
+                name: "Cloud Identity & Directory Sync (GCDS)",
+                badge: "Identity Engine",
+                color: "#4285F4",
+                useCase: "Federating corporate user identities, groups, and multi-factor authentication (MFA) without requiring Google Workspace productivity apps.",
+                uniqueFeature: "Cloud Identity Free provides standalone Identity as a Service (IDaaS); GCDS performs automated scheduled one-way syncs from on-premises Active Directory.",
+                whenToUse: "Use Cloud Identity to centrally govern cloud user lifecycles. Use GCDS to mirror employee onboarding/offboarding from Microsoft Active Directory.",
+                command: "gcloud iam identity-pools create my-pool --location=global --display-name='External Identity Pool'",
+                keyPoints: [
+                    "🔄 GCDS synchronizes one-way only (Active Directory -> Cloud Identity), ensuring on-premises AD remains the definitive source of truth.",
+                    "🛡️ Suspending an employee account in Active Directory immediately invalidates their Cloud Identity OAuth tokens and GCP access.",
+                    "👥 Google Groups created in Cloud Identity can be referenced directly in GCP IAM policy bindings across organizations."
+                ],
+                gotcha: "GCDS does not synchronize passwords! Password authentication requires federated Single Sign-On (SSO) via SAML/OIDC or password sync tools."
             }
         ]
     },
@@ -379,6 +469,36 @@ window.CHEAT_SHEETS = {
                     "👥 Service Accounts are more secure target identifiers than Network Tags because IAM controls who can attach service accounts."
                 ],
                 gotcha: "Firewall rules are stateful! If traffic is permitted ingress, response egress traffic is automatically allowed regardless of egress deny rules."
+            },
+            {
+                name: "Cloud DNS & Domain Management",
+                badge: "Domain Name System",
+                color: "#8ab4f8",
+                useCase: "Publishing low-latency public authoritative DNS records and managing internal private namespace resolution across VPCs.",
+                uniqueFeature: "Supports Private Managed Zones (resolution restricted to VPC networks), Split-Horizon DNS, and automated DNSSEC signing.",
+                whenToUse: "Use Public Zones for external domain names (`example.com`). Use Private Zones for internal microservice discovery (`db.internal`).",
+                command: "gcloud dns managed-zones create my-zone --dns-name=example.com. --description='Public zone' --visibility=public",
+                keyPoints: [
+                    "🔐 DNSSEC protects against DNS spoofing and cache poisoning by validating response origins cryptographically.",
+                    "🔀 Split-Horizon DNS serves different DNS responses for the same domain name depending on whether the client is inside the VPC or on the public internet.",
+                    "🔗 Cloud DNS forwarding rules allow hybrid resolution between on-premises servers and Google Cloud private zones."
+                ],
+                gotcha: "Always include the trailing dot (`.`) when specifying fully qualified domain names (`dns-name`) in Cloud DNS CLI commands!"
+            },
+            {
+                name: "Cloud CDN & Cloud Armor",
+                badge: "Edge Acceleration & WAF",
+                color: "#34A853",
+                useCase: "Caching static web content at global edge locations (Cloud CDN) and filtering DDoS/Layer 7 SQLi attacks (Cloud Armor).",
+                uniqueFeature: "Cloud CDN slashes backend server load and latency; Cloud Armor applies edge web application firewall security policies.",
+                whenToUse: "Enable Cloud CDN on HTTP(S) Load Balancer backends serving static images/CSS/JS. Enable Cloud Armor to enforce rate limiting.",
+                command: "gcloud compute backend-services update my-backend --global --enable-cdn --cache-mode=CACHE_ALL_STATIC",
+                keyPoints: [
+                    "⚡ Cloud CDN caches HTTP GET and HEAD responses at Google's global Anycast edge points of presence (PoPs).",
+                    "🛡️ Cloud Armor rate-limiting rules automatically ban IP addresses exceeding configured request velocity thresholds.",
+                    "🧹 Cache Invalidation commands (`gcloud compute url-maps invalidate-cdn-cache`) force edge servers to purge stale assets."
+                ],
+                gotcha: "Cloud CDN requires an External Application Load Balancer; it cannot be enabled on passthrough Layer 4 Network Load Balancers."
             }
         ]
     },
@@ -469,6 +589,21 @@ window.CHEAT_SHEETS = {
                     "📜 Recognizes standard JSON log formats containing `@type: type.googleapis.com/google.devtools.clouderrorreporting...`."
                 ],
                 gotcha: "Relies on formatted JSON logs or dedicated exception API calls to recognize stack trace line numbers correctly."
+            },
+            {
+                name: "Cloud Asset Inventory & Policy Troubleshooter",
+                badge: "Governance & Debugging",
+                color: "#FBBC05",
+                useCase: "Searching historical inventory across millions of GCP resources (Asset Inventory) and debugging why an IAM API call failed (Policy Troubleshooter).",
+                uniqueFeature: "Asset Inventory exports time-series snapshots of resource state; Policy Troubleshooter inspects IAM allow/deny policies across hierarchies.",
+                whenToUse: "Use Asset Inventory to audit active service account keys older than 90 days across 100 projects. Use Policy Troubleshooter to diagnose `403 Permission Denied` errors.",
+                command: "gcloud asset search-all-resources --scope=organizations/123456 --asset-types=compute.googleapis.com/Instance",
+                keyPoints: [
+                    "🔍 Policy Troubleshooter takes a principal email, resource URI, and API permission string to reveal exactly which role binding allowed or blocked access.",
+                    "📜 Asset Inventory tracks historical resource metadata changes over a 5-week rolling timeline.",
+                    "📤 Supports exporting full organizational resource inventories to BigQuery or Cloud Storage for compliance auditing."
+                ],
+                gotcha: "Cloud Logging records *when* an API call happened. Asset Inventory records *what resource properties existed* at a historical timestamp."
             }
         ]
     }
