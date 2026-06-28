@@ -564,5 +564,285 @@ window.QUESTION_BANK.push(
         ],
         correctAnswer: 0,
         explanation: "💡 <strong>Explanation:</strong> Automated Cloud Billing exports stream daily granular cost and usage telemetry directly into BigQuery tables for automated SQL auditing.<br><br>⚖️ <strong>Service Comparison:</strong> Manual CSV downloads provide static historical lookbacks. BigQuery streaming exports enable automated real-time financial anomaly alerting."
+    },
+    {
+        id: 161,
+        topic: "storage",
+        difficulty: "Medium",
+        question: "Your team is running a production Cloud SQL MySQL instance experiencing rapid, unexpected data growth during marketing flash sales. You want to ensure the database never halts due to running out of disk space, while avoiding paying upfront for large unused disk storage. What should you do?",
+        options: [
+            "Enable the Automatic Storage Increase setting on the Cloud SQL instance configuration.",
+            "Write a Cloud Monitoring alert that triggers a Cloud Function to run `gcloud sql instances patch --storage-size` when disk usage hits 90%.",
+            "Provision a 10 TB persistent disk upfront during instance creation.",
+            "Migrate the database to Cloud Spanner immediately."
+        ],
+        correctAnswer: 0,
+        explanation: "💡 <strong>Explanation:</strong> Enabling Automatic Storage Increase allows Google Cloud to automatically monitor your Cloud SQL available disk space and add storage capacity dynamically whenever available space drops below a threshold.<br><br>⚖️ <strong>Service Comparison:</strong> Manual resizing risks outage race conditions during traffic spikes. Automatic Storage Increase scales disk storage automatically without downtime."
+    },
+    {
+        id: 162,
+        topic: "storage",
+        difficulty: "Hard",
+        question: "You want to partition a BigQuery table containing customer order logs to reduce query costs. The order logs do not contain a date or timestamp column, but every order record includes a unique integer `store_id` ranging from 1 to 500. How can you partition this table efficiently?",
+        options: [
+            "Create an Integer Range Partitioned table on the `store_id` column defining the start (1), end (500), and interval step.",
+            "Partition the table by Ingestion Time (`_PARTITIONTIME`) and require users to query by ingestion date.",
+            "Cluster the table by `store_id` instead of partitioning.",
+            "BigQuery only supports partitioning on DATE, DATETIME, or TIMESTAMP columns."
+        ],
+        correctAnswer: 0,
+        explanation: "💡 <strong>Explanation:</strong> BigQuery natively supports Integer Range Partitioning on integer columns by specifying range bounding boundaries (start, end, and interval). Queries filtering on `store_id` will prune irrelevant partitions.<br><br>⚖️ <strong>Service Comparison:</strong> Ingestion time partitioning groups rows by upload date rather than logical business ID. Integer range partitioning partitions directly by integer keys."
+    },
+    {
+        id: 163,
+        topic: "storage",
+        difficulty: "Hard",
+        question: "Your regulatory compliance department mandates that all data stored in a Cloud Storage bucket must be encrypted using cryptographic keys that your on-premises Hardware Security Module (HSM) generates and stores locally, ensuring Google servers never store the encryption key persistently. Which encryption feature should you use?",
+        options: [
+            "Customer-Supplied Encryption Keys (CSEK)",
+            "Customer-Managed Encryption Keys (CMEK) via Cloud KMS",
+            "Google-managed default encryption keys",
+            "Cloud HSM managed keys"
+        ],
+        correctAnswer: 0,
+        explanation: "💡 <strong>Explanation:</strong> Customer-Supplied Encryption Keys (CSEK) require the client to supply their raw AES-256 encryption key inside every API read/write request header. Google uses the supplied key in memory and purges it immediately after encryption/decryption.<br><br>⚖️ <strong>Service Comparison:</strong> CMEK stores keys inside Google Cloud KMS. CSEK keeps keys strictly on your local infrastructure, requiring you to provide key strings on every API call."
+    },
+    {
+        id: 164,
+        topic: "storage",
+        difficulty: "Medium",
+        question: "You have a web application running JavaScript in browser clients that needs to upload files directly to a Cloud Storage bucket. When browsers attempt the upload, they receive a Cross-Origin Resource Sharing (CORS) security error. How do you resolve this?",
+        options: [
+            "Create a JSON configuration file specifying allowed origins and methods, and apply it to the bucket using `gcloud storage buckets update gs://my-bucket --cors-file=cors.json`.",
+            "Grant `roles/storage.admin` to `allUsers` on the bucket.",
+            "Disable SSL inspection on the VPC firewall.",
+            "Add the browser's IP address to the bucket's IAM whitelist."
+        ],
+        correctAnswer: 0,
+        explanation: "💡 <strong>Explanation:</strong> Web browsers enforce CORS restrictions when client-side code loads resources from a domain different than the web app. Configuring CORS headers on the target Cloud Storage bucket instructs browsers to permit cross-origin requests.<br><br>⚖️ <strong>Service Comparison:</strong> IAM role bindings govern authorization credentials. CORS settings govern web browser Same-Origin Policy enforcement."
+    },
+    {
+        id: 165,
+        topic: "storage",
+        difficulty: "Easy",
+        question: "You want to promote a regional cross-zone read replica of a Cloud SQL instance into a standalone, independent Cloud SQL primary instance that can accept write queries. What is the correct procedure?",
+        options: [
+            "Execute a promote operation (`gcloud sql instances promote-replica`) on the read replica instance.",
+            "Detach the persistent disk from the replica and attach it to a Compute Engine VM.",
+            "Restart the read replica instance with the `--primary` flag.",
+            "Export a SQL dump from the primary and import it into a new instance."
+        ],
+        correctAnswer: 0,
+        explanation: "💡 <strong>Explanation:</strong> Promoting a read replica terminates its replication stream from the primary instance and converts it into a full standalone read-write primary instance.<br><br>⚖️ <strong>Service Comparison:</strong> SQL dump export/import incurs multi-hour downtime for large databases. Replica promotion occurs in minutes with pre-synchronized data."
+    },
+    {
+        id: 166,
+        topic: "storage",
+        difficulty: "Medium",
+        question: "Your data warehouse users run complex analytical aggregation queries in BigQuery every morning across a 50 TB sales table. The queries always compute total revenue grouped by region and product category. How can you accelerate these queries and reduce scanning costs automatically?",
+        options: [
+            "Create a BigQuery Materialized View defining the aggregation; BigQuery will pre-compute results and automatically refresh them as background data changes.",
+            "Create a standard BigQuery logical View.",
+            "Export the query results into a CSV file stored in Cloud Storage daily.",
+            "Enable caching in Google Data Studio."
+        ],
+        correctAnswer: 0,
+        explanation: "💡 <strong>Explanation:</strong> Materialized Views pre-compute and persistently store aggregated results. When users query the view (or even the base table), the BigQuery optimizer leverages pre-computed data, slashing latency and byte-scanning billing.<br><br>⚖️ <strong>Service Comparison:</strong> Logical Views execute the full underlying SQL query on every call. Materialized Views store physical pre-aggregated calculations."
+    },
+    {
+        id: 167,
+        topic: "storage",
+        difficulty: "Hard",
+        question: "You deploy Memorystore for Redis to cache session state for an App Engine application. To protect against zonal data center failures, you need high availability with automated failover. Which Memorystore configuration should you provision?",
+        options: [
+            "Standard Tier instance configuration",
+            "Basic Tier instance configuration with cross-region backups",
+            "Memorystore for Memcached cluster",
+            "Compute Engine instance group running Redis Sentinel"
+        ],
+        correctAnswer: 0,
+        explanation: "💡 <strong>Explanation:</strong> Memorystore for Redis Standard Tier provisions a primary node and a highly available standby replica in a different zone within the same region, automating synchronous failover.<br><br>⚖️ <strong>Service Comparison:</strong> Basic Tier provides a standalone node without failover SLA. Standard Tier provides multi-zone high availability."
+    },
+    {
+        id: 168,
+        topic: "storage",
+        difficulty: "Easy",
+        question: "A bucket is configured with a default storage class of Nearline. If a user executes `gsutil cp file.txt gs://my-bucket/` without specifying a storage class flag, what storage class will be assigned to `file.txt`?",
+        options: [
+            "Nearline Storage",
+            "Standard Storage",
+            "Coldline Storage",
+            "Archive Storage"
+        ],
+        correctAnswer: 0,
+        explanation: "💡 <strong>Explanation:</strong> When new objects are uploaded to a Cloud Storage bucket without explicit storage class flags, they automatically inherit the bucket's configured Default Storage Class.<br><br>⚖️ <strong>Service Comparison:</strong> Upload commands can override default classes using flags (`-c coldline`), but absent override flags, objects adopt the bucket default."
+    },
+    {
+        id: 169,
+        topic: "storage",
+        difficulty: "Medium",
+        question: "You want to share public datasets hosted in Cloud Storage with third-party researchers worldwide. However, you want the researchers to pay for their own data download network egress charges rather than billing your project. Which feature should you enable?",
+        options: [
+            "Requester Pays on the target Cloud Storage bucket.",
+            "Uniform Bucket-Level Access.",
+            "Signed URLs with billing project parameters.",
+            "Cloud NAT egress filtering."
+        ],
+        correctAnswer: 0,
+        explanation: "💡 <strong>Explanation:</strong> Enabling Requester Pays shifts all network egress and operational access retrieval charges from the bucket owner directly onto the Google Cloud billing account of the requesting identity.<br><br>⚖️ <strong>Service Comparison:</strong> Standard buckets bill egress traffic to the bucket owner. Requester Pays requires data consumers to provide their project ID for egress billing."
+    },
+    {
+        id: 170,
+        topic: "storage",
+        difficulty: "Hard",
+        question: "You are setting up a private connection for Database Migration Service (DMS) to replicate data from an on-premises database into Cloud SQL over a VPN tunnel. Which networking mechanism does DMS use to establish secure private connectivity to your VPC?",
+        options: [
+            "Private Service Connect or Reverse SSH Tunnel (Private Service Access / VPC Peering)",
+            "Public internet external IP mapping",
+            "Cloud Armor NAT forwarding",
+            "IAP Desktop tunneling"
+        ],
+        correctAnswer: 0,
+        explanation: "💡 <strong>Explanation:</strong> Database Migration Service connects securely to private on-premises or VPC networks using Private Service Connect, VPC Peering, or Reverse SSH tunnels without exposing database endpoints publicly.<br><br>⚖️ <strong>Service Comparison:</strong> Public IP migration opens firewall ports to the internet. Private Service Connect routes data entirely over internal private IP conduits."
+    },
+    {
+        id: 171,
+        topic: "storage",
+        difficulty: "Medium",
+        question: "A company operates an application using Cloud Spanner across a 3-node regional instance. CPU utilization during peak hours averages 85%, exceeding recommended thresholds and increasing read latency. How should you scale the database to restore optimal latency?",
+        options: [
+            "Increase the number of processing nodes (or compute capacity units) in the Cloud Spanner instance.",
+            "Add read replicas in a secondary availability zone.",
+            "Upgrade the storage SSD volume size.",
+            "Enable query result caching in Spanner console settings."
+        ],
+        correctAnswer: 0,
+        explanation: "💡 <strong>Explanation:</strong> Cloud Spanner scales compute throughput and lowers CPU load linearly by increasing the number of nodes (or 100-processing unit increments) assigned to the instance.<br><br>⚖️ <strong>Service Comparison:</strong> Cloud SQL requires upgrading instance CPU/RAM machine types. Cloud Spanner scales compute out horizontally by adding nodes without downtime."
+    },
+    {
+        id: 172,
+        topic: "storage",
+        difficulty: "Easy",
+        question: "Which BigQuery pricing model allows enterprises to purchase dedicated query processing capacity (measured in slots) for predictable flat-rate monthly billing instead of paying per terabyte scanned?",
+        options: [
+            "BigQuery Capacity Commitments (Editions / Slot Reservations)",
+            "On-Demand Pricing model",
+            "Sustained Use Discounts",
+            "Committed Use Discounts for Compute Engine"
+        ],
+        correctAnswer: 0,
+        explanation: "💡 <strong>Explanation:</strong> BigQuery Capacity Commitments (Standard, Enterprise, and Enterprise Plus Editions) allow reserving dedicated virtual CPUs (slots) for fixed monthly budgets.<br><br>⚖️ <strong>Service Comparison:</strong> On-Demand bills $6.25 per TB scanned. Capacity Reservations bill a predictable monthly rate for reserved parallel query slots."
+    },
+    {
+        id: 173,
+        topic: "storage",
+        difficulty: "Hard",
+        question: "You want to take a snapshot of a Compute Engine Persistent Disk without shutting down or pausing the running VM instance. To guarantee application data consistency on disk before the snapshot starts, what command should you run inside the VM operating system?",
+        options: [
+            "Flush file system buffers to disk (e.g. `sync` or `fsfreeze` in Linux, or Volume Shadow Copy Service in Windows).",
+            "Run `gcloud compute disks snapshot --force`.",
+            "Unmount the root volume.",
+            "Restart the Cloud Logging daemon."
+        ],
+        correctAnswer: 0,
+        explanation: "💡 <strong>Explanation:</strong> While persistent disk snapshots can be taken on running VMs, flushing OS buffers (`fsfreeze -f /`) ensures all pending in-memory writes commit to block disk sectors before the snapshot captures state.<br><br>⚖️ <strong>Service Comparison:</strong> Crash-consistent snapshots capture whatever is physically on disk at that millisecond. Application-consistent snapshots require freezing filesystem write buffers first."
+    },
+    {
+        id: 174,
+        topic: "storage",
+        difficulty: "Medium",
+        question: "You need to backup a Cloud Spanner database located in `us-central1` and store the backup archive in `europe-west1` for disaster recovery compliance. How can you achieve this using native Spanner features?",
+        options: [
+            "Create a backup specifying `europe-west1` as the encryption and storage location (`gcloud spanner backups create --instance=... --backup-location=europe-west1`).",
+            "Export the Spanner database to Avro files in GCS and copy the bucket across regions.",
+            "Spanner backups must reside in the exact same geographic region as the parent instance.",
+            "Take a Persistent Disk snapshot of the Spanner nodes."
+        ],
+        correctAnswer: 0,
+        explanation: "💡 <strong>Explanation:</strong> Cloud Spanner natively supports creating backups in any geographic region distinct from the primary instance location to satisfy strict cross-region DR mandates.<br><br>⚖️ <strong>Service Comparison:</strong> Manual Avro export requires multi-hour Dataflow batch pipelines. Native Spanner backups create consistent snapshots across regions via simple API calls."
+    },
+    {
+        id: 175,
+        topic: "storage",
+        difficulty: "Hard",
+        question: "A developer wants to allow unauthenticated web users to upload files directly into a Cloud Storage bucket via HTML web forms. To ensure users cannot upload files larger than 10 MB or overwrite existing files, what security mechanism should the server generate?",
+        options: [
+            "A Signed Policy Document (POST Object policy) specifying exact content-length conditions and bucket keys.",
+            "A standard GET Signed URL valid for 24 hours.",
+            "A Service Account JSON private key embedded in the HTML page.",
+            "An IAM binding for `roles/storage.objectCreator` on `allUsers`."
+        ],
+        correctAnswer: 0,
+        explanation: "💡 <strong>Explanation:</strong> Signed Policy Documents (POST Object) allow web form uploads where the backend cryptographically enforces strict validation rules (max file size, file prefix, content type) before GCS accepts the bytes.<br><br>⚖️ <strong>Service Comparison:</strong> Standard PUT Signed URLs permit uploading any file size up to bucket quotas. Signed Policy Documents enforce strict granular upload restrictions."
+    },
+    {
+        id: 176,
+        topic: "storage",
+        difficulty: "Easy",
+        question: "Which Cloud SQL flag or setting must you enable if your application requires automated backups to execute successfully during scheduled nightly maintenance windows?",
+        options: [
+            "Automated Backups must be enabled and the instance must NOT be stopped during the backup window.",
+            "The database must be locked in read-only mode.",
+            "You must enable public IPv4 connectivity.",
+            "You must attach a secondary SSD volume."
+        ],
+        correctAnswer: 0,
+        explanation: "💡 <strong>Explanation:</strong> Automated backups run smoothly in the background during configured daily windows provided the Cloud SQL instance remains active and running.<br><br>⚖️ <strong>Service Comparison:</strong> Stopped instances cannot perform backup snapshot operations. Ensure instances remain active during designated backup windows."
+    },
+    {
+        id: 177,
+        topic: "storage",
+        difficulty: "Medium",
+        question: "You want to monitor Cloud Storage bucket storage utilization in gigabytes over time using Cloud Monitoring. Which metric category tracks total stored byte volume?",
+        options: [
+            "storage.googleapis.com/storage/total_bytes",
+            "storage.googleapis.com/network/sent_bytes_count",
+            "storage.googleapis.com/api/request_count",
+            "compute.googleapis.com/instance/disk/write_bytes_count"
+        ],
+        correctAnswer: 0,
+        explanation: "💡 <strong>Explanation:</strong> `storage/total_bytes` reports the total byte size of all objects inside a Cloud Storage bucket sampled once per day.<br><br>⚖️ <strong>Service Comparison:</strong> `sent_bytes_count` measures network bandwidth egress. `total_bytes` measures static storage capacity utilization."
+    },
+    {
+        id: 178,
+        topic: "storage",
+        difficulty: "Hard",
+        question: "You want to execute a federated query in BigQuery that joins a native BigQuery table with a relational table residing inside a running Cloud SQL PostgreSQL instance. What mechanism establishes this connection?",
+        options: [
+            "BigQuery Cloud SQL Connection (using `EXTERNAL_QUERY` function).",
+            "VPC Network Peering between BigQuery and Cloud SQL.",
+            "Exporting Cloud SQL tables to CSV every hour.",
+            "Memorystore Redis cache syncing."
+        ],
+        correctAnswer: 0,
+        explanation: "💡 <strong>Explanation:</strong> BigQuery Cloud SQL federated connections allow using the `EXTERNAL_QUERY()` SQL function to query Cloud SQL databases live directly from BigQuery script windows.<br><br>⚖️ <strong>Service Comparison:</strong> ETL batch pipelines introduce data freshness lag. `EXTERNAL_QUERY` executes queries live against real-time operational Cloud SQL tables."
+    },
+    {
+        id: 179,
+        topic: "storage",
+        difficulty: "Medium",
+        question: "What happens when you delete a primary Cloud SQL instance that has two active read replicas attached to it?",
+        options: [
+            "The read replicas are not deleted; they are automatically detached and converted into standalone, standalone read-only instances (or read-write depending on engine).",
+            "The read replicas are deleted immediately along with the primary instance.",
+            "The deletion fails until all replicas are explicitly destroyed first.",
+            "The replicas fail over and become dual primary instances."
+        ],
+        correctAnswer: 0,
+        explanation: "💡 <strong>Explanation:</strong> Deleting a master Cloud SQL instance disconnects replication streams, leaving existing read replicas intact as standalone DB instances so data is preserved.<br><br>⚖️ <strong>Service Comparison:</strong> Cascade deletion could accidentally wipe backup read repositories. Cloud SQL disconnects replicas safely during primary removal."
+    },
+    {
+        id: 180,
+        topic: "storage",
+        difficulty: "Easy",
+        question: "Which database service is best suited for storing user session profiles and shopping cart state for a high-traffic web application requiring single-digit millisecond read and write latency?",
+        options: [
+            "Memorystore for Redis (or Cloud Firestore)",
+            "Cloud Bigtable",
+            "BigQuery",
+            "Cloud Storage Archive"
+        ],
+        correctAnswer: 0,
+        explanation: "💡 <strong>Explanation:</strong> Memorystore (Redis) and Cloud Firestore provide lightning-fast key-value/document lookups ideal for ephemeral user session caching.<br><br>⚖️ <strong>Service Comparison:</strong> BigQuery is for OLAP analytics. Memorystore/Firestore deliver the sub-millisecond responsiveness essential for shopping cart experiences."
     }
 );
